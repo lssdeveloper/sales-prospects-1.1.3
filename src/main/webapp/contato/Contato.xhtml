@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/WEB-INF/template/layout.xhtml">
+
+	<ui:define name="titulo">Pesquisar Contatos</ui:define>
+
+	<ui:define name="conteudo">
+
+		<f:metadata>
+			<f:viewAction action="#{contatosBean.todosContatos}" />
+		</f:metadata>
+    	<h1>Pesquisar Contatos</h1>
+		<h:form id="frm">
+
+			<p:messages id="messages" />
+
+			<p:toolbar id="toolbar">
+
+				<f:facet name="left">
+
+					<p:inputText id="termoPesquisa"
+						placeholder="Digite aqui o nome de um contato..." size="30"
+						value="#{contatosBean.termoPesquisa}" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa-search"
+						actionListener="#{contatosBean.pesquisar}"
+						update="contatosDataTable messages" process="@this termoPesquisa" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+					<p:commandButton value="Nova" icon="fa fa-plus"
+						actionListener="#{contatosBean.prepararNovoContato}"
+						oncomplete="PF('contatoDialogWidgetVar').show()"
+						update="contatoDialog messages" process="@this">
+
+						<p:resetInput target="contatoDialog" />
+
+					</p:commandButton>
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+					<p:commandButton title="Editar" icon="fa fa-edit"
+						disabled="#{not contatosBean.contatoSeleciona}"
+						actionListener="#{contatosBean.prepararEdicao}"
+						oncomplete="PF('contatoDialogWidgetVar').show()"
+						update="contatoDialog messages" process="@this">
+						<p:resetInput target="contatoDialog" />
+					</p:commandButton>
+
+					<p:commandButton title="Excluir" icon="fa fa-trash"
+						disabled="#{not contatosBean.contatoSeleciona}"
+						actionListener="#{contatosBean.excluir}"
+						update="messages contatosDataTable toolbar" process="@this">
+
+						<p:confirm icon="ui-icon-alert" header="Confirmação de exclusão"
+							message="Confirma excluir o contato?" />
+
+					</p:commandButton>
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+					<p:commandButton title="Exportar para o Excel"
+						icon="fa fa-file-excel-o" ajax="false">
+
+						<p:dataExporter type="xls" target="contatosDataTable"
+							fileName="Contatos" />
+
+					</p:commandButton>
+				</f:facet>
+			</p:toolbar>
+
+			<!-- separa a toolbar do data table -->
+			<p:spacer height="20px" />
+
+			<p:dataTable id="contatosDataTable"
+				value="#{contatosBean.listaContatos}" var="contato"
+				emptyMessage="Nenhuma informação a ser exibida"
+				resizableColumns="true" paginator="true" rows="10"
+				paginatorPosition="bottom" selectionMode="single"
+				selection="#{contatosBean.contato}" rowKey="#{contato.id}">
+
+				<p:ajax event="rowSelect" update="frm:toolbar frm:messages" />
+
+				<p:ajax event="rowUnselect" update="frm:toolbar frm:messages" />
+
+				<f:facet name="header">CONTATOS</f:facet>
+
+				<p:column sortBy="#{contato.empresa.razaoSocial}"
+					headerText="RAZÃO SOCIAL" style="text-align: left; ">
+					<h:outputText value="#{contato.empresa.razaoSocial}" />
+				</p:column>
+
+				<p:column sortBy="#{contato.nome}" headerText="NOME"
+					style="text-align: left; ">
+					<h:outputText value="#{contato.nome}" />
+				</p:column>
+
+				<p:column headerText="E-MAIL" style="text-align: left;">
+					<h:outputText value="#{contato.email}" />
+				</p:column>
+
+				<p:column headerText="TELEFONE"
+					style="text-align: center; width:100px;">
+					<h:outputText value="#{contato.telefone}" />
+				</p:column>
+				<p:column headerText="RAMAL" style="text-align: center; width:80px;">
+					<h:outputText value="#{contato.ramal}" />
+				</p:column>
+				<p:column headerText="CELULAR"
+					style="text-align: center; width:100px;">
+					<h:outputText value="#{contato.celular}" />
+				</p:column>
+
+				<p:column sortBy="#{contato.dataCadastro}"
+					headerText="DATA CADASTRO" style="text-align: center; width:120px;">
+					<h:outputText value="#{contato.dataCadastro}">
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog id="contatoDialog" header="CONTATO"
+				widgetVar="contatoDialogWidgetVar" modal="true" resizable="false"
+				closeOnEscape="true" draggable="false">
+
+				<p:messages id="contatoMessages" />
+
+				<p:defaultCommand target="salvarCommandButton" scope="contatoDialog" />
+
+				<p:panelGrid columns="2" id="contatoPanelGrid" styleClass="semBorda"
+					rendered="#{contatosBean.contato ne null}">
+
+					<p:outputLabel value="RAZÃO SOCIAL:" for="empresa" />
+
+					<p:autoComplete id="empresa" size="80"
+						completeMethod="#{contatosBean.completarEmpresa}"
+						converter="#{contatosBean.empresaConverter}" var="empresa"
+						itemLabel="#{empresa.razaoSocial}" itemValue="#{empresa}"
+						value="#{contatosBean.contato.empresa}" />
+
+					<p:outputLabel value="NOME:" for="nome" />
+					<p:inputText id="nome" size="80" maxlength="120"
+						value="#{contatosBean.contato.nome}" />
+
+					<p:outputLabel value="E-MAIL:" for="email" />
+					<p:inputText id="email" size="80" maxlength="120"
+						value="#{contatosBean.contato.email}" />
+
+					<p:outputLabel value="TELEFONE:" for="telefone" />
+					<p:inputMask id="telefone" mask="(99)9999-9999" size="14"
+						maxlength="13" value="#{contatosBean.contato.telefone}" />
+
+					<p:outputLabel value="RAMAL:" for="ramal" />
+					<p:inputMask id="ramal" mask="9999" size="4"
+						maxlength="10" value="#{contatosBean.contato.ramal}" />
+
+					<p:outputLabel value="CELULAR:" for="celular" />
+					<p:inputMask id="celular" mask="(99)99999-9999" size="14"
+						maxlength="14" value="#{contatosBean.contato.celular}" />
+
+					<h:outputLabel />
+
+					<p:commandButton id="salvarCommandButton" value="Gravar" icon="fa fa-save"
+						actionListener="#{contatosBean.salvar}"
+						update="contatoPanelGrid contatoMessages"
+						oncomplete="if (!args.validationFailed) PF('contatoDialogWidgetVar').hide()"
+						process="contatoDialog" />
+
+				</p:panelGrid>
+
+			</p:dialog>
+	
+		</h:form>
+	</ui:define>
+</ui:composition>
