@@ -23,7 +23,7 @@
 
 				<p:toolbarGroup>
 					<p:button value="Pesquisar" icon="fa fa-search"
-						style="margin-right: 15px;" outcome="/prospecto/PesquisaProspecto" />
+						 outcome="/prospecto/PesquisaProspecto" />
 					<span class="ui-separator"> <span
 						class="ui-icon ui-icon-grip-dotted-vertical" />
 					</span>
@@ -79,11 +79,11 @@
 				<p:outputLabel />
 
 				<p:outputLabel value="COLABORADOR: " for="usuario" />
-				<h:outputLabel id="usuario" size="40"
+				<h:outputLabel id="usuario" 
 					value="#{prospectosBean.prospecto.usuario.nome}" />
 
 				<p:outputLabel value="TIPO: " for="tipo" />
-				<p:autoComplete id="tipo" size="40" dropdown="true"
+				<p:autoComplete id="tipo" dropdown="true" 
 					completeMethod="#{prospectosBean.completarTipoProspecto}"
 					converter="#{prospectosBean.tipoProspectoConverter}"
 					var="tipoProspecto" itemLabel="#{tipoProspecto.descricao}"
