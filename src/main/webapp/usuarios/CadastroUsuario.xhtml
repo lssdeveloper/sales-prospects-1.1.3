@@ -70,9 +70,10 @@
 				<p:outputLabel value="CONFIRME A SENHA:" />
 				<p:password id="confirme" />
 
-				<p:commandButton style="margin-top: 10px" value="Adicionar Grupo" icon="fa fa-group"
-					title="Grupo de permissão" oncomplete="PF('novo-grupo').show();"
-					id="btn-novo-grupo" update="frm:dialog-novo-grupo" process="@this"
+				<p:commandButton style="margin-top: 10px" value="Adicionar Grupo"
+					icon="fa fa-group" title="Grupo de permissão"
+					oncomplete="PF('novo-grupo').show();" id="btn-novo-grupo"
+					update="frm:dialog-novo-grupo" process="@this"
 					disabled="#{cadastroUsuarioBean.usuario.id eq null}">
 					<p:resetInput target="dialog-novo-grupo" />
 
@@ -98,8 +99,7 @@
 			</p:dataTable>
 
 			<p:dialog id="dialog-novo-grupo" widgetVar="novo-grupo"
-				header="GRUPO" closeOnEscape="true" modal="true"
-				responsive="true">
+				header="GRUPO" closeOnEscape="true" modal="true" responsive="true">
 
 				<h:panelGroup id="painel-novo-grupo">
 
@@ -112,16 +112,15 @@
 						<p:inputText id="nomeGrupo"
 							value="#{cadastroGrupoBean.grupo.nome}" />
 
-						<p:outputLabel value="DESCRIÇÃO:" for="descricaoGrupo" />
-						<h:panelGroup>
-							<p:inputTextarea id="descricaoGrupo"
-								value="#{cadastroGrupoBean.grupo.descricao}" rows="4" cols="40"
-								counter="contador" counterTemplate="Restam {0} caracteres"
-								maxlength="160" />
-							<br />
-							<h:outputText id="contador" />
-						</h:panelGroup>
-						<p:outputLabel/>
+
+						<p:outputLabel value="GRUPO: " for="grupo" />
+						<p:selectOneMenu id="grupo" value="#{cadastroGrupoBean.grupo.nome}">
+							<f:selectItem itemLabel="Selecione ..." />
+							<f:selectItems value="#{cadastroGrupoBean.tiposGrupos}"
+								var="tipoGrupo" itemLabel="#{tipoGrupo.descricao}"
+								itemValue="#{tipoGrupo}" />
+						</p:selectOneMenu>
+
 						<p:commandButton value="Gravar" icon="fa fa-save"
 							action="#{cadastroGrupoBean.adicionar}"
 							process="painel-novo-grupo"

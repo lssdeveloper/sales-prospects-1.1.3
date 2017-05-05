@@ -1,22 +1,24 @@
 package br.com.acangasolucoes.erp.controller;
 
 
-import org.primefaces.context.RequestContext;
-
-import br.com.acangasolucoes.erp.model.Grupo;
-import br.com.acangasolucoes.erp.model.Usuario;
-import br.com.acangasolucoes.erp.service.CadastroUsuarioService;
-import br.com.acangasolucoes.erp.service.NegocioException;
-import br.com.acangasolucoes.erp.util.jsf.FacesUtil;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import org.primefaces.context.RequestContext;
+
+import br.com.acangasolucoes.erp.model.Grupo;
+import br.com.acangasolucoes.erp.model.TipoGrupo;
+import br.com.acangasolucoes.erp.model.Usuario;
+import br.com.acangasolucoes.erp.service.CadastroUsuarioService;
+import br.com.acangasolucoes.erp.service.NegocioException;
+import br.com.acangasolucoes.erp.util.jsf.FacesUtil;
 
 @Named
 @RequestScoped
@@ -36,8 +38,9 @@ public class CadastroGrupoBean implements Serializable {
     private Grupo grupo;
     private List<Grupo> gruposDetails;
 
-
-
+    public TipoGrupo[] getTiposGrupos() {
+        return TipoGrupo.values();
+    }
     public CadastroGrupoBean() {
         grupo = new Grupo();
         gruposDetails = new ArrayList<>();
